@@ -21,15 +21,14 @@ Notes
     'time_merge' : The timestep of merger
     'chi_p' : The precessing spin component of the binary prior to merger
 """
-import numpy as np
-
 MERGER_FIELD_NAMES = [
-             'galaxy',
-             'bin_com', 'final_mass', 'chi_eff', 'final_spin',
-             'spin_angle', 'mass_1', 'mass_2', 'spin1',
-             'spin2', 'theta1', 'theta2', 'gen1',
-             'gen2', 'time_merge', 'chi_p']
+    'galaxy',
+    'bin_com', 'final_mass', 'chi_eff', 'final_spin',
+    'spin_angle', 'mass_1', 'mass_2', 'spin1',
+    'spin2', 'theta1', 'theta2', 'gen1',
+    'gen2', 'time_merge', 'chi_p']
 #dtype_rec = np.dtype( [(x, float) for x in names_rec])
+
 
 def merged_bh(
     merged_bh_array,
@@ -42,7 +41,7 @@ def merged_bh(
     n_mergers_so_far,
     chi_p,
     time_passed
-    ):
+):
     """Return an array with properties of merger
 
     Designed only to handle one event at a time, with hardcoded labels
@@ -74,21 +73,21 @@ def merged_bh(
     """
     #Comment here
     #Center of mass, M_total, Chi_eff, a_tot, spin_angle, m1,m2,a1,a2,theta1,theta2,gen1,gen2,time of merger, chi_eff
-    merged_bh_array[0,n_mergers_so_far + merger_id] = binary_bh_array[9,merger_indices[merger_id]]
-    merged_bh_array[1,n_mergers_so_far + merger_id] = final_mass
-    merged_bh_array[2,n_mergers_so_far + merger_id] = chi_eff
-    merged_bh_array[3,n_mergers_so_far + merger_id] = final_spin
-    merged_bh_array[4,n_mergers_so_far + merger_id] = 0.0
-    merged_bh_array[5,n_mergers_so_far + merger_id] = binary_bh_array[2,merger_indices[merger_id]]
-    merged_bh_array[6,n_mergers_so_far + merger_id] = binary_bh_array[3,merger_indices[merger_id]]
-    merged_bh_array[7,n_mergers_so_far + merger_id] = binary_bh_array[4,merger_indices[merger_id]]
-    merged_bh_array[8,n_mergers_so_far + merger_id] = binary_bh_array[5,merger_indices[merger_id]]
-    merged_bh_array[9,n_mergers_so_far + merger_id] = binary_bh_array[6,merger_indices[merger_id]]
-    merged_bh_array[10,n_mergers_so_far + merger_id] = binary_bh_array[7,merger_indices[merger_id]]
-    merged_bh_array[11,n_mergers_so_far + merger_id] = binary_bh_array[14,merger_indices[merger_id]]
-    merged_bh_array[12,n_mergers_so_far + merger_id] = binary_bh_array[15,merger_indices[merger_id]]
-    merged_bh_array[13,n_mergers_so_far + merger_id] = time_passed
-    merged_bh_array[14,n_mergers_so_far + merger_id] = chi_p
+    merged_bh_array[0, n_mergers_so_far + merger_id] = binary_bh_array[9, merger_indices[merger_id]]
+    merged_bh_array[1, n_mergers_so_far + merger_id] = final_mass
+    merged_bh_array[2, n_mergers_so_far + merger_id] = chi_eff
+    merged_bh_array[3, n_mergers_so_far + merger_id] = final_spin
+    merged_bh_array[4, n_mergers_so_far + merger_id] = 0.0
+    merged_bh_array[5, n_mergers_so_far + merger_id] = binary_bh_array[2, merger_indices[merger_id]]
+    merged_bh_array[6, n_mergers_so_far + merger_id] = binary_bh_array[3, merger_indices[merger_id]]
+    merged_bh_array[7, n_mergers_so_far + merger_id] = binary_bh_array[4, merger_indices[merger_id]]
+    merged_bh_array[8, n_mergers_so_far + merger_id] = binary_bh_array[5, merger_indices[merger_id]]
+    merged_bh_array[9, n_mergers_so_far + merger_id] = binary_bh_array[6, merger_indices[merger_id]]
+    merged_bh_array[10, n_mergers_so_far + merger_id] = binary_bh_array[7, merger_indices[merger_id]]
+    merged_bh_array[11, n_mergers_so_far + merger_id] = binary_bh_array[14, merger_indices[merger_id]]
+    merged_bh_array[12, n_mergers_so_far + merger_id] = binary_bh_array[15, merger_indices[merger_id]]
+    merged_bh_array[13, n_mergers_so_far + merger_id] = time_passed
+    merged_bh_array[14, n_mergers_so_far + merger_id] = chi_p
     # We don't need to return this anymore, because we are mutating the merger array
     # which was passed by reference.
     #return merged_bh_array[:,n_mergers_so_far + merger_id]

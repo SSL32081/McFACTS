@@ -68,13 +68,13 @@ def circular_singles_encounters_prograde(
     1, find those orbiters with e<e_crit and their
         associated semi-major axes a_circ =[a_circ1, a_circ2, ..] and masses m_circ =[m_circ1,m_circ2, ..].
 
-    2, calculate orbital timescales for a_circ1 and a_i and N_orbits/timestep. 
+    2, calculate orbital timescales for a_circ1 and a_i and N_orbits/timestep.
         For example, since
         :math:`T_orb =2\\pi \sqrt(a^3/GM_{smbh})`
         and
         .. math::
         a^3/GM_{smbh} = (10^3r_g)^3/GM_{smbh} = 10^9 (a/10^3r_g)^3 (GM_{smbh}/c^2)^3/GM_{smbh} \\
-                    = 10^9 (a/10^3r_g)^3 (G M_{smbh}/c^3)^2 
+                    = 10^9 (a/10^3r_g)^3 (G M_{smbh}/c^3)^2
 
         So
         .. math::
@@ -87,48 +87,48 @@ def circular_singles_encounters_prograde(
         Therefore in a timestep=1.e4yr, a BH at 10^3r_g orbits the SMBH N_orbit/timestep =3,000 times.
 
     3, among population of orbiters with e>e_crit,
-        find those orbiters (a_i,e_i) where a_i*(1-e_i)< a_circ1,j <a_i*(1-e_i) for all members a_circ1,j of the circularized population 
+        find those orbiters (a_i,e_i) where a_i*(1-e_i)< a_circ1,j <a_i*(1-e_i) for all members a_circ1,j of the circularized population
         so we can test for possible interactions.
 
     4, calculate mutual Hill sphere R_H of candidate binary (a_circ1,j ,a_i).
 
     5, calculate ratio of 2R_H of binary to size of circular orbit, or (2R_H/2pi a_circ1,j)
-        Hill sphere possible on both crossing inwards and outwards once per orbit, 
-        so 2xHill sphere =4R_H worth of circular orbit will have possible encounter. 
+        Hill sphere possible on both crossing inwards and outwards once per orbit,
+        so 2xHill sphere =4R_H worth of circular orbit will have possible encounter.
         Thus, (4R_H/2pi a_circ1)= odds that a_circ1 is in the region of cross-over per orbit.
-        For example, for BH at a_circ1 = 1e3r_g, 
+        For example, for BH at a_circ1 = 1e3r_g,
             .. math:: R_h = a_{circ1}*(m_{circ1} + m_i/3M_{smbh})^1/3
             .. math:: = 0.004a_{circ1} (m_{circ1}/10M_{sun})^1/3 (m_i/10M_{sun})^1/3 (M_{smbh}/1e8M_{sun})^-1/3
         then
-            ratio (4R_H/2pi a_circ1) = 0.008/pi ~ 0.0026 
-            (ie around 1/400 odds that BH at a_circ1 is in either area of crossing)         
+            ratio (4R_H/2pi a_circ1) = 0.008/pi ~ 0.0026
+            (ie around 1/400 odds that BH at a_circ1 is in either area of crossing)
 
-    6, calculate number of orbits of a_i in 1 timestep. 
-        If e.g. N_orb(a_i)/timestep = 200 orbits per timestep of 10kyr, then 
-        probability of encounter = (200orbits/timestep)*(4R_H/2pi a_circ1) ~ 0.5, 
+    6, calculate number of orbits of a_i in 1 timestep.
+        If e.g. N_orb(a_i)/timestep = 200 orbits per timestep of 10kyr, then
+        probability of encounter = (200orbits/timestep)*(4R_H/2pi a_circ1) ~ 0.5,
                                 or 50% odds of an encounter on this timestep between (a_circ1,j , a_i).
         If probability > 1, set probability = 1.
-    7, draw a random number from the uniform [0,1] distribution and 
+    7, draw a random number from the uniform [0,1] distribution and
         if rng < probability of encounter, there is an encounter during the timestep
         if rng > probability of encounter, there is no encounter during the timestep
 
     8, if encounter:
         Take energy (de) from high ecc. a_i and give energy (de) to a_circ1,j
         de is average fractional energy change per encounter.
-            So, a_circ1,j ->(1+de)a_circ1,j.    
+            So, a_circ1,j ->(1+de)a_circ1,j.
                 e_circ1,j ->(crit_ecc + de)
             and
                 a_i       ->(1-de)a_i
-                e_i       ->(1-de)e_i              
-        Could be that average energy in gas-free cluster case is  
-        assume average energy transfer = 20% perturbation (from Sigurdsson & Phinney 1993). 
+                e_i       ->(1-de)e_i
+        Could be that average energy in gas-free cluster case is
+        assume average energy transfer = 20% perturbation (from Sigurdsson & Phinney 1993).
 
         Further notes for self:
         sigma_ecc = sqrt(ecc^2 + incl^2)v_kep so if incl=0 deg (for now)
         En of ecc. interloper = 1/2 m_i sigma_ecc^2.
             Note: Can also use above logic for binary encounters except use binary binding energy instead.
 
-        or later could try 
+        or later could try
             Deflection angle defl = tan (defl) = dV_perp/V = 2GM/bV^2 kg^-1 m^3 s^-2 kg / m (m s^-1)^2
         so :math:`de/e =2GM/bV^2 = 2 G M_{bin}/0.5R_{hill}*\sigma^2`
         and :math:`R_hill = a_{circ1}*(M_{bin}/3M_{smbh})^1/3 and \sigma^2 =ecc^2*v_{kep}^2`
@@ -138,16 +138,16 @@ def circular_singles_encounters_prograde(
         where :math:`V_{rel} = \sigma` say and :math:`b=R_H = a_{circ1} (q/3)^{1/3}`
         So :math:`defl = 2GM/ a_{circ1}(q/3)^2/3 ecc^2 10^14 (m/s)^2 (R/10^3r_g)^-1`
             :math:`= 2 6.7e-11 2.e31/`
-        !!Note: when doing this for binaries. 
+        !!Note: when doing this for binaries.
             Calculate velocity of encounter compared to a_bin.
             If binary is hard ie GM_bin/a_bin > m3v_rel^2 then:
-            harden binary 
+            harden binary
                 a_bin -> a_bin -da_bin and
-            new binary eccentricity 
-                e_bin -> e_bin + de  
+            new binary eccentricity
+                e_bin -> e_bin + de
             and give  da_bin worth of binding energy to extra eccentricity of m3.
             If binary is soft ie GM_bin/a_bin <m3v_rel^2 then:
-            soften binary 
+            soften binary
                 a_bin -> a_bin + da_bin and
             new binary eccentricity
                 e_bin -> e_bin + de
@@ -274,13 +274,13 @@ def circular_singles_encounters_prograde_stars(
     1, find those orbiters with e<e_crit and their
         associated semi-major axes a_circ =[a_circ1, a_circ2, ..] and masses m_circ =[m_circ1,m_circ2, ..].
 
-    2, calculate orbital timescales for a_circ1 and a_i and N_orbits/timestep. 
+    2, calculate orbital timescales for a_circ1 and a_i and N_orbits/timestep.
         For example, since
         :math:`T_orb =2\\pi \sqrt(a^3/GM_{smbh})`
         and
         .. math::
         a^3/GM_{smbh} = (10^3r_g)^3/GM_{smbh} = 10^9 (a/10^3r_g)^3 (GM_{smbh}/c^2)^3/GM_{smbh} \\
-                    = 10^9 (a/10^3r_g)^3 (G M_{smbh}/c^3)^2 
+                    = 10^9 (a/10^3r_g)^3 (G M_{smbh}/c^3)^2
 
         So
         .. math::
@@ -293,48 +293,48 @@ def circular_singles_encounters_prograde_stars(
         Therefore in a timestep=1.e4yr, a BH at 10^3r_g orbits the SMBH N_orbit/timestep =3,000 times.
 
     3, among population of orbiters with e>e_crit,
-        find those orbiters (a_i,e_i) where a_i*(1-e_i)< a_circ1,j <a_i*(1-e_i) for all members a_circ1,j of the circularized population 
+        find those orbiters (a_i,e_i) where a_i*(1-e_i)< a_circ1,j <a_i*(1-e_i) for all members a_circ1,j of the circularized population
         so we can test for possible interactions.
 
     4, calculate mutual Hill sphere R_H of candidate binary (a_circ1,j ,a_i).
 
     5, calculate ratio of 2R_H of binary to size of circular orbit, or (2R_H/2pi a_circ1,j)
-        Hill sphere possible on both crossing inwards and outwards once per orbit, 
-        so 2xHill sphere =4R_H worth of circular orbit will have possible encounter. 
+        Hill sphere possible on both crossing inwards and outwards once per orbit,
+        so 2xHill sphere =4R_H worth of circular orbit will have possible encounter.
         Thus, (4R_H/2pi a_circ1)= odds that a_circ1 is in the region of cross-over per orbit.
-        For example, for BH at a_circ1 = 1e3r_g, 
+        For example, for BH at a_circ1 = 1e3r_g,
             .. math:: R_h = a_{circ1}*(m_{circ1} + m_i/3M_{smbh})^1/3
             .. math:: = 0.004a_{circ1} (m_{circ1}/10M_{sun})^1/3 (m_i/10M_{sun})^1/3 (M_{smbh}/1e8M_{sun})^-1/3
         then
-            ratio (4R_H/2pi a_circ1) = 0.008/pi ~ 0.0026 
-            (ie around 1/400 odds that BH at a_circ1 is in either area of crossing)         
+            ratio (4R_H/2pi a_circ1) = 0.008/pi ~ 0.0026
+            (ie around 1/400 odds that BH at a_circ1 is in either area of crossing)
 
-    6, calculate number of orbits of a_i in 1 timestep. 
-        If e.g. N_orb(a_i)/timestep = 200 orbits per timestep of 10kyr, then 
-        probability of encounter = (200orbits/timestep)*(4R_H/2pi a_circ1) ~ 0.5, 
+    6, calculate number of orbits of a_i in 1 timestep.
+        If e.g. N_orb(a_i)/timestep = 200 orbits per timestep of 10kyr, then
+        probability of encounter = (200orbits/timestep)*(4R_H/2pi a_circ1) ~ 0.5,
                                 or 50% odds of an encounter on this timestep between (a_circ1,j , a_i).
         If probability > 1, set probability = 1.
-    7, draw a random number from the uniform [0,1] distribution and 
+    7, draw a random number from the uniform [0,1] distribution and
         if rng < probability of encounter, there is an encounter during the timestep
         if rng > probability of encounter, there is no encounter during the timestep
 
     8, if encounter:
         Take energy (de) from high ecc. a_i and give energy (de) to a_circ1,j
         de is average fractional energy change per encounter.
-            So, a_circ1,j ->(1+de)a_circ1,j.    
+            So, a_circ1,j ->(1+de)a_circ1,j.
                 e_circ1,j ->(crit_ecc + de)
             and
                 a_i       ->(1-de)a_i
-                e_i       ->(1-de)e_i              
-        Could be that average energy in gas-free cluster case is  
-        assume average energy transfer = 20% perturbation (from Sigurdsson & Phinney 1993). 
+                e_i       ->(1-de)e_i
+        Could be that average energy in gas-free cluster case is
+        assume average energy transfer = 20% perturbation (from Sigurdsson & Phinney 1993).
 
         Further notes for self:
         sigma_ecc = sqrt(ecc^2 + incl^2)v_kep so if incl=0 deg (for now)
         En of ecc. interloper = 1/2 m_i sigma_ecc^2.
             Note: Can also use above logic for binary encounters except use binary binding energy instead.
 
-        or later could try 
+        or later could try
             Deflection angle defl = tan (defl) = dV_perp/V = 2GM/bV^2 kg^-1 m^3 s^-2 kg / m (m s^-1)^2
         so :math:`de/e =2GM/bV^2 = 2 G M_{bin}/0.5R_{hill}*\sigma^2`
         and :math:`R_hill = a_{circ1}*(M_{bin}/3M_{smbh})^1/3 and \sigma^2 =ecc^2*v_{kep}^2`
@@ -344,16 +344,16 @@ def circular_singles_encounters_prograde_stars(
         where :math:`V_{rel} = \sigma` say and :math:`b=R_H = a_{circ1} (q/3)^{1/3}`
         So :math:`defl = 2GM/ a_{circ1}(q/3)^2/3 ecc^2 10^14 (m/s)^2 (R/10^3r_g)^-1`
             :math:`= 2 6.7e-11 2.e31/`
-        !!Note: when doing this for binaries. 
+        !!Note: when doing this for binaries.
             Calculate velocity of encounter compared to a_bin.
             If binary is hard ie GM_bin/a_bin > m3v_rel^2 then:
-            harden binary 
+            harden binary
                 a_bin -> a_bin -da_bin and
-            new binary eccentricity 
-                e_bin -> e_bin + de  
+            new binary eccentricity
+                e_bin -> e_bin + de
             and give  da_bin worth of binding energy to extra eccentricity of m3.
             If binary is soft ie GM_bin/a_bin <m3v_rel^2 then:
-            soften binary 
+            soften binary
                 a_bin -> a_bin + da_bin and
             new binary eccentricity
                 e_bin -> e_bin + de
@@ -369,7 +369,7 @@ def circular_singles_encounters_prograde_stars(
 
     # T_orb = pi (R/r_g)^1.5 (GM_smbh/c^2) = pi (R/r_g)^1.5 (GM_smbh*2e30/c^2)
     #      = pi (R/r_g)^1.5 (6.7e-11 2e38/27e24)= pi (R/r_g)^1.5 (1.3e11)s =(R/r_g)^1/5 (1.3e4)
-    orbital_timescales_circ_pops = scipy.constants.pi*((disk_star_pro_orbs_a[circ_prograde_population_indices])**(1.5))*(2.e30*smbh_mass*scipy.constants.G)/(scipy.constants.c**(3.0)*3.15e7) 
+    orbital_timescales_circ_pops = scipy.constants.pi*((disk_star_pro_orbs_a[circ_prograde_population_indices])**(1.5))*(2.e30*smbh_mass*scipy.constants.G)/(scipy.constants.c**(3.0)*3.15e7)
     N_circ_orbs_per_timestep = timestep_duration_yr/orbital_timescales_circ_pops
     ecc_orb_min = disk_star_pro_orbs_a[ecc_prograde_population_indices]*(1.0-disk_star_pro_orbs_ecc[ecc_prograde_population_indices])
     ecc_orb_max = disk_star_pro_orbs_a[ecc_prograde_population_indices]*(1.0+disk_star_pro_orbs_ecc[ecc_prograde_population_indices])
@@ -524,13 +524,13 @@ def circular_singles_encounters_prograde_star_bh(
     1, find those orbiters with e<e_crit and their
         associated semi-major axes a_circ =[a_circ1, a_circ2, ..] and masses m_circ =[m_circ1,m_circ2, ..].
 
-    2, calculate orbital timescales for a_circ1 and a_i and N_orbits/timestep. 
+    2, calculate orbital timescales for a_circ1 and a_i and N_orbits/timestep.
         For example, since
         :math:`T_orb =2\\pi \sqrt(a^3/GM_{smbh})`
         and
         .. math::
         a^3/GM_{smbh} = (10^3r_g)^3/GM_{smbh} = 10^9 (a/10^3r_g)^3 (GM_{smbh}/c^2)^3/GM_{smbh} \\
-                    = 10^9 (a/10^3r_g)^3 (G M_{smbh}/c^3)^2 
+                    = 10^9 (a/10^3r_g)^3 (G M_{smbh}/c^3)^2
 
         So
         .. math::
@@ -543,48 +543,48 @@ def circular_singles_encounters_prograde_star_bh(
         Therefore in a timestep=1.e4yr, a BH at 10^3r_g orbits the SMBH N_orbit/timestep =3,000 times.
 
     3, among population of orbiters with e>e_crit,
-        find those orbiters (a_i,e_i) where a_i*(1-e_i)< a_circ1,j <a_i*(1-e_i) for all members a_circ1,j of the circularized population 
+        find those orbiters (a_i,e_i) where a_i*(1-e_i)< a_circ1,j <a_i*(1-e_i) for all members a_circ1,j of the circularized population
         so we can test for possible interactions.
 
     4, calculate mutual Hill sphere R_H of candidate binary (a_circ1,j ,a_i).
 
     5, calculate ratio of 2R_H of binary to size of circular orbit, or (2R_H/2pi a_circ1,j)
-        Hill sphere possible on both crossing inwards and outwards once per orbit, 
-        so 2xHill sphere =4R_H worth of circular orbit will have possible encounter. 
+        Hill sphere possible on both crossing inwards and outwards once per orbit,
+        so 2xHill sphere =4R_H worth of circular orbit will have possible encounter.
         Thus, (4R_H/2pi a_circ1)= odds that a_circ1 is in the region of cross-over per orbit.
-        For example, for BH at a_circ1 = 1e3r_g, 
+        For example, for BH at a_circ1 = 1e3r_g,
             .. math:: R_h = a_{circ1}*(m_{circ1} + m_i/3M_{smbh})^1/3
             .. math:: = 0.004a_{circ1} (m_{circ1}/10M_{sun})^1/3 (m_i/10M_{sun})^1/3 (M_{smbh}/1e8M_{sun})^-1/3
         then
-            ratio (4R_H/2pi a_circ1) = 0.008/pi ~ 0.0026 
-            (ie around 1/400 odds that BH at a_circ1 is in either area of crossing)         
+            ratio (4R_H/2pi a_circ1) = 0.008/pi ~ 0.0026
+            (ie around 1/400 odds that BH at a_circ1 is in either area of crossing)
 
-    6, calculate number of orbits of a_i in 1 timestep. 
-        If e.g. N_orb(a_i)/timestep = 200 orbits per timestep of 10kyr, then 
-        probability of encounter = (200orbits/timestep)*(4R_H/2pi a_circ1) ~ 0.5, 
+    6, calculate number of orbits of a_i in 1 timestep.
+        If e.g. N_orb(a_i)/timestep = 200 orbits per timestep of 10kyr, then
+        probability of encounter = (200orbits/timestep)*(4R_H/2pi a_circ1) ~ 0.5,
                                 or 50% odds of an encounter on this timestep between (a_circ1,j , a_i).
         If probability > 1, set probability = 1.
-    7, draw a random number from the uniform [0,1] distribution and 
+    7, draw a random number from the uniform [0,1] distribution and
         if rng < probability of encounter, there is an encounter during the timestep
         if rng > probability of encounter, there is no encounter during the timestep
 
     8, if encounter:
         Take energy (de) from high ecc. a_i and give energy (de) to a_circ1,j
         de is average fractional energy change per encounter.
-            So, a_circ1,j ->(1+de)a_circ1,j.    
+            So, a_circ1,j ->(1+de)a_circ1,j.
                 e_circ1,j ->(crit_ecc + de)
             and
                 a_i       ->(1-de)a_i
-                e_i       ->(1-de)e_i              
-        Could be that average energy in gas-free cluster case is  
-        assume average energy transfer = 20% perturbation (from Sigurdsson & Phinney 1993). 
+                e_i       ->(1-de)e_i
+        Could be that average energy in gas-free cluster case is
+        assume average energy transfer = 20% perturbation (from Sigurdsson & Phinney 1993).
 
         Further notes for self:
         sigma_ecc = sqrt(ecc^2 + incl^2)v_kep so if incl=0 deg (for now)
         En of ecc. interloper = 1/2 m_i sigma_ecc^2.
             Note: Can also use above logic for binary encounters except use binary binding energy instead.
 
-        or later could try 
+        or later could try
             Deflection angle defl = tan (defl) = dV_perp/V = 2GM/bV^2 kg^-1 m^3 s^-2 kg / m (m s^-1)^2
         so :math:`de/e =2GM/bV^2 = 2 G M_{bin}/0.5R_{hill}*\sigma^2`
         and :math:`R_hill = a_{circ1}*(M_{bin}/3M_{smbh})^1/3 and \sigma^2 =ecc^2*v_{kep}^2`
@@ -594,16 +594,16 @@ def circular_singles_encounters_prograde_star_bh(
         where :math:`V_{rel} = \sigma` say and :math:`b=R_H = a_{circ1} (q/3)^{1/3}`
         So :math:`defl = 2GM/ a_{circ1}(q/3)^2/3 ecc^2 10^14 (m/s)^2 (R/10^3r_g)^-1`
             :math:`= 2 6.7e-11 2.e31/`
-        !!Note: when doing this for binaries. 
+        !!Note: when doing this for binaries.
             Calculate velocity of encounter compared to a_bin.
             If binary is hard ie GM_bin/a_bin > m3v_rel^2 then:
-            harden binary 
+            harden binary
                 a_bin -> a_bin -da_bin and
-            new binary eccentricity 
-                e_bin -> e_bin + de  
+            new binary eccentricity
+                e_bin -> e_bin + de
             and give  da_bin worth of binding energy to extra eccentricity of m3.
             If binary is soft ie GM_bin/a_bin <m3v_rel^2 then:
-            soften binary 
+            soften binary
                 a_bin -> a_bin + da_bin and
             new binary eccentricity
                 e_bin -> e_bin + de
@@ -620,7 +620,7 @@ def circular_singles_encounters_prograde_star_bh(
 
     # T_orb = pi (R/r_g)^1.5 (GM_smbh/c^2) = pi (R/r_g)^1.5 (GM_smbh*2e30/c^2)
     #      = pi (R/r_g)^1.5 (6.7e-11 2e38/27e24)= pi (R/r_g)^1.5 (1.3e11)s =(R/r_g)^1/5 (1.3e4)
-    orbital_timescales_circ_pops = scipy.constants.pi*((disk_star_pro_orbs_a[circ_prograde_population_indices])**(1.5))*(2.e30*smbh_mass*scipy.constants.G)/(scipy.constants.c**(3.0)*3.15e7) 
+    orbital_timescales_circ_pops = scipy.constants.pi*((disk_star_pro_orbs_a[circ_prograde_population_indices])**(1.5))*(2.e30*smbh_mass*scipy.constants.G)/(scipy.constants.c**(3.0)*3.15e7)
     N_circ_orbs_per_timestep = timestep_duration_yr/orbital_timescales_circ_pops
     ecc_orb_min = disk_bh_pro_orbs_a[ecc_prograde_population_indices]*(1.0-disk_bh_pro_orbs_a[ecc_prograde_population_indices])
     ecc_orb_max = disk_bh_pro_orbs_a[ecc_prograde_population_indices]*(1.0+disk_bh_pro_orbs_a[ecc_prograde_population_indices])
@@ -780,8 +780,8 @@ def circular_binaries_encounters_ecc_prograde(
             2.  Calculate the binary orbital time and N_orbits/timestep
                 For example, since
                 T_orb =2pi sqrt{bin,orb a}^3/GM_smbh)
-                and {bin,orb a}^3/GM_smbh = (10^3r_g)^3/GM_smbh = 10^9 ({bin,orb a}/10^3r_g)^3 (GM_smbh/c^2)^3/GM_smbh 
-                    = 10^9 ({bin,orb a}/10^3r_g)^3 (G M_smbh/c^3)^2 
+                and {bin,orb a}^3/GM_smbh = (10^3r_g)^3/GM_smbh = 10^9 ({bin,orb a}/10^3r_g)^3 (GM_smbh/c^2)^3/GM_smbh
+                    = 10^9 ({bin,orb a}/10^3r_g)^3 (G M_smbh/c^3)^2
 
                 So,
                 .. math::
@@ -804,7 +804,7 @@ def circular_binaries_encounters_ecc_prograde(
                         :math:`v_{ecc,i} =\\sqrt(GM/a_{ecc_i})` ..average Keplerian vel.
 
                     :math:`v_{rel} = abs(v_{bin,i} - v_{ecc,i})`
-            7. Calculate relative K.E. of tertiary, (1/2)m_ecc_i*v_rel_^2     
+            7. Calculate relative K.E. of tertiary, (1/2)m_ecc_i*v_rel_^2
             8. Compare binding en of binary to K.E. of tertiary.
                 Critical velocity for ionization of binary is v_crit, given by:
                     :math:`v_{crit} = \\sqrt(GM_1M_2(M_1+M_2+M_3)/M_3(M_1+M_2)a_{bin})
@@ -812,8 +812,8 @@ def circular_binaries_encounters_ecc_prograde(
                     harden binary
                         a_bin -> a_bin -da_bin and
                     new binary eccentricity
-                        e_bin -> e_bin + de 
-                    and give  +da_bin worth of binding energy (GM_bin/(a_bin -da_bin) - GM_bin/a_bin) 
+                        e_bin -> e_bin + de
+                    and give  +da_bin worth of binding energy (GM_bin/(a_bin -da_bin) - GM_bin/a_bin)
                     to extra eccentricity ecc_i and a_ecc,i of m_ecc,i.
                     Say average en of encounter is de=0.1 (10%) then binary a_bin shrinks by 10%, ecc_bin is pumped by 10%
                     And a_ecc_i shrinks by 10% and ecc_i also shrinks by 10%
@@ -833,25 +833,25 @@ def circular_binaries_encounters_ecc_prograde(
             9. As 4, except now include interactions between binaries and circularized BH. This should give us primarily
                 hardening encounters as in Leigh+2018, since the v_rel is likely to be small for more binaries.
 
-    Given array of binaries at locations [a_bbh1,a_bbh2] with 
+    Given array of binaries at locations [a_bbh1,a_bbh2] with
     binary semi-major axes [a_bin1,a_bin2,...] and binary eccentricities [e_bin1,e_bin2,...],
-    find all the single BH at locations a_i that within timestep 
+    find all the single BH at locations a_i that within timestep
         either pass between a_i(1-e_i)< a_bbh1 <a_i(1+e_i)
 
     Calculate velocity of encounter compared to a_bin.
     If binary is hard ie GM1M2/a_bin > m3v_rel^2 then:
       harden binary to a_bin = a_bin -da_bin and
       new binary eccentricity e_bin = e_bin + de around com and
-      new binary orb eccentricity e_orb_com = e_orb_com + de and 
+      new binary orb eccentricity e_orb_com = e_orb_com + de and
       now give  da_bin worth of binding energy to extra eccentricity of m3.
     If binary is soft ie GM_bin/a_bin <m3v_rel^2 then:
       soften binary to a_bin = a_bin + da_bin and
       new binary eccentricity e_bin = e_bin + de
-      and take da_bin worth of binary energy from eccentricity of m3. 
+      and take da_bin worth of binary energy from eccentricity of m3.
     If binary is unbound ie GM_bin/a_bin << m3v_rel^2 then:
       remove binary from binary array
       add binary components m1,m2 back to singleton arrays with new orbital eccentricities e_1,e_2 from energy of encounter.
-      Equipartition energy so m1v1^2 =m2 v_2^2 and 
+      Equipartition energy so m1v1^2 =m2 v_2^2 and
       generate new individual orbital eccentricities e1=v1/v_kep_circ and e_2=v_2/v_kep_circ
       Take energy put into destroying binary from orb. eccentricity of m3.
     """
@@ -1031,7 +1031,7 @@ def circular_binaries_encounters_circ_prograde(
     population, where f is some fraction/multiple of Hill sphere radius
     R_H
     Right now assume f=1.
-    Logic:  
+    Logic:
             0.  Find number of binaries in this timestep given by bindex
             1.  Find the binary center of mass (c.o.m.) and corresponding orbital velocities & binary total masses.
                 disk_bins_bhbh[9,:] = bin c.o.m. = [R_bin1_orb_a,R_bin2_orb_a,...]. These are the orbital radii of the bins.
@@ -1043,8 +1043,8 @@ def circular_binaries_encounters_circ_prograde(
             2.  Calculate the binary orbital time and N_orbits/timestep
                 For example, since
                 T_orb =2pi sqrt(R_bin_com^3/GM_smbh)
-                and R_bin_com^3/GM_smbh = (10^3r_g)^3/GM_smbh = 10^9 (R_bin_com/10^3r_g)^3 (GM_smbh/c^2)^3/GM_smbh 
-                    = 10^9 (R_bin_com/10^3r_g)^3 (G M_smbh/c^3)^2 
+                and R_bin_com^3/GM_smbh = (10^3r_g)^3/GM_smbh = 10^9 (R_bin_com/10^3r_g)^3 (GM_smbh/c^2)^3/GM_smbh
+                    = 10^9 (R_bin_com/10^3r_g)^3 (G M_smbh/c^3)^2
 
                 So,
                 .. math::
@@ -1072,10 +1072,10 @@ def circular_binaries_encounters_circ_prograde(
                 Critical velocity for ionization of binary is v_crit, given by:
                     :math:`v_{crit} = \\sqrt(GM_1M_2(M_1+M_2+M_3)/M_3(M_1+M_2)a_{bin})
                 If binary is hard ie GM_1M_2/a_bin > m3v_rel^2 then:
-                    harden binary 
+                    harden binary
                         a_bin -> a_bin -da_bin and
                     new binary eccentricity
-                        e_bin -> e_bin + de 
+                        e_bin -> e_bin + de
                     and give  +da_bin worth of binding energy (GM_bin/(a_bin -da_bin) - GM_bin/a_bin)
                     to extra eccentricity ecc_i and a_ecc,i of m_ecc,i.
                     Say average en of encounter is de=0.1 (10%) then binary a_bin shrinks by 10%, ecc_bin is pumped by 10%
@@ -1086,7 +1086,7 @@ def circular_binaries_encounters_circ_prograde(
                             update singleton array with 2 new BH with orbital eccentricity e_crit+de
                             remove binary from binary array
                     else if v_rel < v_crit
-                        soften binary 
+                        soften binary
                             a_bin -> a_bin + da_bin and
                         new binary eccentricity
                             e_bin -> e_bin + de
@@ -1190,7 +1190,7 @@ def circular_binaries_encounters_circ_prograde(
                         # Change binary parameters; decr separation, incr ecc around com and orb_ecc
                         # de_strong here refers to the perturbation of the binary around its center of mass
                         # The energy in the exchange is assumed to come from the binary binding energy around its c.o.m.
-                        # delta_energy_strong refers to the perturbation of the orbit of the binary c.o.m. around the SMBH, which is not as strongly perturbed (we take an 'average' perturbation) 
+                        # delta_energy_strong refers to the perturbation of the orbit of the binary c.o.m. around the SMBH, which is not as strongly perturbed (we take an 'average' perturbation)
                         bin_sep[i] = bin_sep[i] * (1 - de_strong)
                         bin_ecc[i] = bin_ecc[i] * (1 + de_strong)
                         bin_orb_ecc[i] = bin_orb_ecc[i] * (1 + delta_energy_strong)
@@ -1302,7 +1302,7 @@ def bin_spheroid_encounter(
     However, orbits at those small radii get captured quickly by the disk.
 
     From Fig.1 in Leigh+18, Rate of sph. encounter = 20/Myr at t=0, normalized to a_bin=1AU, R_disk=10^3r_g or 0.2/10kyr timestep.
-    Introduce a spheroid normalization factor nsc_spheroid_normalization=1 (default) allowing for non-ideal NSC (previous episodes; disky populations etc). 
+    Introduce a spheroid normalization factor nsc_spheroid_normalization=1 (default) allowing for non-ideal NSC (previous episodes; disky populations etc).
     Within 1Myr, for a dense model disk (e.g. Sirko & Goodman), most of those inner stellar orbits have been captured by the disk.
     So rate of sph. encounter ->0/Myr at t=1Myr since those orbits are gone (R<10^3r_g; assuming approx circular orbits!) for SG disk model
     For TQM disk model, rate of encounter slightly lower but non-zero.
@@ -1351,7 +1351,7 @@ def bin_spheroid_encounter(
     Resultant L_bin must be the resultant in a parallelogram of L3 (one side) and L_bin(other side)
 
     Angle of encounter:
-    If angle of encounter between BBH and M3 (angle_enc)<|90deg|, ie angle_enc is in [0-90deg,270-360deg] then: 
+    If angle of encounter between BBH and M3 (angle_enc)<|90deg|, ie angle_enc is in [0-90deg,270-360deg] then:
     L_bin_new = sqrt(L3^2 + L_bin^2 + 2L3L_bin cos(angle_enc)) ....(4)
               = sqrt( (1+ratio^2)L_bin^2 + 2ratioL_bin^2 cos(angle_enc))
               = sqrt((1+ratio^2) + 2ratio*cos(angle_enc)) L_bin_old
@@ -1413,7 +1413,7 @@ def bin_spheroid_encounter(
     # Magnitude of energy change to drive binary to merger in ~2 interactions in a strong encounter. Say de_strong=0.9
     # de_strong here refers to the perturbation of the binary around its center of mass
     # The energy in the exchange is assumed to come from the binary binding energy around its c.o.m.
-    # delta_energy_strong refers to the perturbation of the orbit of the binary c.o.m. around the SMBH, which is not as strongly perturbed (we take an 'average' perturbation) 
+    # delta_energy_strong refers to the perturbation of the orbit of the binary c.o.m. around the SMBH, which is not as strongly perturbed (we take an 'average' perturbation)
 
     # Pick from a normal distribution defined by the user, and bound it between 0 and 1.
     de_strong = max(0., min(1., rng.normal(mean_harden_energy_delta, var_harden_energy_delta)))
@@ -1463,8 +1463,8 @@ def bin_spheroid_encounter(
         bin_orb_ecc = bin_orb_ecc_all[encounter_index].copy()
         bin_orb_inc = bin_orb_inc_all[encounter_index].copy()
 
-        # Have already generated spheroid interaction, so a_3 is not far off a_bbh (unless super high ecc). 
-        # Assume a_3 is similar to a_bbh (within a factor of O(3), so allowing for modest relative eccentricity)    
+        # Have already generated spheroid interaction, so a_3 is not far off a_bbh (unless super high ecc).
+        # Assume a_3 is similar to a_bbh (within a factor of O(3), so allowing for modest relative eccentricity)
         # i.e. a_3=[10^-0.5,10^0.5]*a_bbh.
 
         # Calculate interloper parameters
@@ -1559,7 +1559,6 @@ def bin_spheroid_encounter(
     assert np.all(bin_sep_all >= 0), \
         "bin_sep_all contains values < 0"
 
-
     return (bin_sep_all, bin_ecc_all, bin_orb_ecc_all, bin_orb_inc_all)
 
 
@@ -1624,7 +1623,7 @@ def bh_near_smbh(
         ):
     """Evolve semi-major axis of single BH near SMBH according to Peters64
 
-    Test whether there are any BH near SMBH. 
+    Test whether there are any BH near SMBH.
     Flag if anything within min_safe_distance (default=50r_g) of SMBH.
     Time to decay into SMBH can be parameterized from Peters(1964) as:
     .. math:: t_{gw} =38Myr (1-e^2)(7/2) (a/50r_{g})^4 (M_{smbh}/10^8M_{sun})^3 (m_{bh}/10M_{sun})^{-1}

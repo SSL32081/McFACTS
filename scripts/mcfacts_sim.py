@@ -13,20 +13,11 @@ from mcfacts.physics.binary import evolve
 from mcfacts.physics.binary import formation
 from mcfacts.physics.binary import merge
 
-from mcfacts.physics import accretion
-from mcfacts.physics import disk_capture
-from mcfacts.physics import dynamics
-from mcfacts.physics import eccentricity
-from mcfacts.physics import emri
-from mcfacts.physics import tde
-from mcfacts.physics import feedback
-from mcfacts.physics import gw
-from mcfacts.physics import migration
-from mcfacts.physics import stellar_interpolation
-#from mcfacts.physics import star_interactions
-from mcfacts.physics import point_masses
-from mcfacts.physics import lum
-from mcfacts.physics import analytical_velo
+from mcfacts.physics import (
+    accretion, disk_capture, dynamics, eccentricity, emri,
+    tde, feedback, gw, migration, stellar_interpolation,
+    point_masses, lum, analytical_velo
+)
 
 from mcfacts.inputs import ReadInputs
 from mcfacts.inputs import data as input_data
@@ -192,6 +183,7 @@ def arg():
             F.write(line)
     return opts
 
+
 def main():
     """
     """
@@ -210,7 +202,7 @@ def main():
                                          opts.disk_radius_outer,
                                          opts.disk_model_name,
                                          opts.disk_alpha_viscosity,
-                                         opts.disk_bh_eddington_ratio, 
+                                         opts.disk_bh_eddington_ratio,
                                          disk_radius_max_pc=opts.disk_radius_max_pc,
                                          flag_use_pagn=opts.flag_use_pagn,
                                          verbose=opts.verbose
@@ -240,7 +232,7 @@ def main():
     for galaxy in range(opts.galaxy_num):
         print("Galaxy", galaxy)
         # Set random number generator for this run with incremented seed
-        rng = reset_random(opts.seed+galaxy)
+        rng = reset_random(opts.seed + galaxy)
 
         # Make subdirectories for each galaxy
         # Fills run number with leading zeros to stay sequential
@@ -264,9 +256,9 @@ def main():
         disk_bh_spin_resolution_min = 0.02
         agn_redshift = 0.1
         #------------------       HARDCODING agn_redshift = 0.1 HERE       -----------------------------------
-        # This is for computing the gw strain for sources and NOTHING else if you are 
-        #   not using our strain this parameter will do nothing. If you are using our strain and you want to put 
-        #   your sources at a different distance, scale them to the value here DO NOT CHANGE 
+        # This is for computing the gw strain for sources and NOTHING else if you are
+        #   not using our strain this parameter will do nothing. If you are using our strain and you want to put
+        #   your sources at a different distance, scale them to the value here DO NOT CHANGE
 
         # Set up number of BH in disk
         disk_bh_num = setupdiskblackholes.setup_disk_nbh(
@@ -345,7 +337,8 @@ def main():
 
         # Initialize stars
         if opts.flag_add_stars:
-            stars, disk_star_num = initializediskstars.init_single_stars(opts, disk_aspect_ratio, galaxy, id_start_val=filing_cabinet.id_max+1)
+            stars, disk_star_num = initializediskstars.init_single_stars(
+                    opts, disk_aspect_ratio, galaxy, id_start_val=filing_cabinet.id_max + 1)
         else:
             stars, disk_star_num = AGNStar(), 0
 
@@ -365,9 +358,13 @@ def main():
         blackholes.to_txt(os.path.join(opts.work_directory, f"gal{galaxy_zfilled_str}/initial_params_bh.dat"))
 
         # Write torques stuff to file
-        star_torque_array_radius_outer = stellar_interpolation.ratio_star_torques(disk_density, disk_pressure_grad, disk_aspect_ratio, disk_surface_density, disk_omega, opts.disk_radius_outer, opts.smbh_mass)
+        star_torque_array_radius_outer = stellar_interpolation.ratio_star_torques(
+            disk_density, disk_pressure_grad, disk_aspect_ratio,
+            disk_surface_density, disk_omega, opts.disk_radius_outer, opts.smbh_mass)
         np.savetxt(os.path.join(opts.work_directory) + "/star_torques_disk_radius_outer.dat", star_torque_array_radius_outer, header="drag_torque mig_torque ratio_torque v_phi v_kep v_rel")
-        star_torque_array_radius_trap = stellar_interpolation.ratio_star_torques(disk_density, disk_pressure_grad, disk_aspect_ratio, disk_surface_density, disk_omega, opts.disk_radius_trap, opts.smbh_mass)
+        star_torque_array_radius_trap = stellar_interpolation.ratio_star_torques(
+            disk_density, disk_pressure_grad, disk_aspect_ratio,
+            disk_surface_density, disk_omega, opts.disk_radius_trap, opts.smbh_mass)
         np.savetxt(os.path.join(opts.work_directory) + "/star_torques_disk_radius_trap.dat", star_torque_array_radius_trap, header="drag_torque mig_torque ratio_torque v_phi v_kep v_rel")
 
         if (opts.flag_initial_stars_BH_immortal == 1):
@@ -402,7 +399,7 @@ def main():
                                   "size",
                                   np.full(len(star_to_bh_id_num), -1.5))
 
-        # Generate initial inner disk arrays for objects that end up in the inner disk. 
+        # Generate initial inner disk arrays for objects that end up in the inner disk.
         # This is to track possible EMRIs--we're tossing things in these arrays
         #  that end up with semi-major axis < 50rg
         # Assume all drawn from prograde population for now.
@@ -410,7 +407,7 @@ def main():
 
         # Test if any BH or BBH are in the danger-zone (<inner_disk_outer_radius, default =50r_g) from SMBH.
         # Potential EMRI/BBH EMRIs.
-        # Find prograde BH in inner disk. Define inner disk as <=50r_g. 
+        # Find prograde BH in inner disk. Define inner disk as <=50r_g.
         # Since a 10Msun BH will decay into a 10^8Msun SMBH at 50R_g in ~38Myr and decay time propto a^4.
         # e.g at 25R_g, decay time is only 2.3Myr.
 
@@ -687,20 +684,21 @@ def main():
                 )
 
                 # Thermal torque from JM17 (if flag_thermal_feedback off, this component is 0.)
-                jimenez_masset_thermal_torque_coeff_bh = migration.jimenezmasset17_thermal_torque_coeff(
-                    opts.smbh_mass,
-                    disk_surface_density,
-                    disk_opacity,
-                    disk_aspect_ratio,
-                    temp_func,
-                    opts.disk_bh_eddington_ratio,
-                    blackholes_pro.orb_a,
-                    blackholes_pro.orb_ecc,
-                    opts.disk_bh_pro_orb_ecc_crit,
-                    blackholes_pro.mass,
-                    opts.flag_thermal_feedback,
-                    disk_dlog10pressure_dlog10R_func
-                )
+                jimenez_masset_thermal_torque_coeff_bh = \
+                    migration.jimenezmasset17_thermal_torque_coeff(
+                        opts.smbh_mass,
+                        disk_surface_density,
+                        disk_opacity,
+                        disk_aspect_ratio,
+                        temp_func,
+                        opts.disk_bh_eddington_ratio,
+                        blackholes_pro.orb_a,
+                        blackholes_pro.orb_ecc,
+                        opts.disk_bh_pro_orb_ecc_crit,
+                        blackholes_pro.mass,
+                        opts.flag_thermal_feedback,
+                        disk_dlog10pressure_dlog10R_func
+                    )
 
                 jimenez_masset_thermal_torque_coeff_star = migration.jimenezmasset17_thermal_torque_coeff(
                     opts.smbh_mass,
@@ -967,31 +965,33 @@ def main():
             #   note this is dyn friction only, not true 'migration'
             # change retrograde eccentricity (some damping, some pumping)
             # damp orbital inclination
-            blackholes_retro.orb_ecc, blackholes_retro.orb_a, blackholes_retro.orb_inc = disk_capture.retro_bh_orb_disk_evolve(
-                opts.smbh_mass,
-                blackholes_retro.mass,
-                blackholes_retro.orb_a,
-                blackholes_retro.orb_ecc,
-                blackholes_retro.orb_inc,
-                blackholes_retro.orb_arg_periapse,
-                opts.disk_inner_stable_circ_orb,
-                disk_surface_density,
-                opts.timestep_duration_yr,
-                opts.disk_radius_outer
-            )
+            blackholes_retro.orb_ecc, blackholes_retro.orb_a, blackholes_retro.orb_inc = \
+                disk_capture.retro_bh_orb_disk_evolve(
+                    opts.smbh_mass,
+                    blackholes_retro.mass,
+                    blackholes_retro.orb_a,
+                    blackholes_retro.orb_ecc,
+                    blackholes_retro.orb_inc,
+                    blackholes_retro.orb_arg_periapse,
+                    opts.disk_inner_stable_circ_orb,
+                    disk_surface_density,
+                    opts.timestep_duration_yr,
+                    opts.disk_radius_outer
+                )
             # KN: Does this function apply to all disk objects and if so should we rename it?
-            stars_retro.orb_ecc, stars_retro.orb_a, stars_retro.orb_inc = disk_capture.retro_bh_orb_disk_evolve(
-                opts.smbh_mass,
-                stars_retro.mass,
-                stars_retro.orb_a,
-                stars_retro.orb_ecc,
-                stars_retro.orb_inc,
-                stars_retro.orb_arg_periapse,
-                opts.disk_inner_stable_circ_orb,
-                disk_surface_density,
-                opts.timestep_duration_yr,
-                opts.disk_radius_outer
-            )
+            stars_retro.orb_ecc, stars_retro.orb_a, stars_retro.orb_inc = \
+                disk_capture.retro_bh_orb_disk_evolve(
+                    opts.smbh_mass,
+                    stars_retro.mass,
+                    stars_retro.orb_a,
+                    stars_retro.orb_ecc,
+                    stars_retro.orb_inc,
+                    stars_retro.orb_arg_periapse,
+                    opts.disk_inner_stable_circ_orb,
+                    disk_surface_density,
+                    opts.timestep_duration_yr,
+                    opts.disk_radius_outer
+                )
 
             # Update filing cabinet
             filing_cabinet.update(id_num=blackholes_retro.id_num,
@@ -1529,36 +1529,39 @@ def main():
                 )
 
                 # Torque angle of binary spin components
-                blackholes_binary.spin_angle_1, blackholes_binary.spin_angle_2 = evolve.change_bin_spin_angles(
-                    blackholes_binary.spin_angle_1,
-                    blackholes_binary.spin_angle_2,
-                    blackholes_binary.flag_merging,
-                    opts.disk_bh_eddington_ratio,
-                    opts.disk_bh_torque_condition,
-                    disk_bh_spin_resolution_min,
-                    opts.timestep_duration_yr,
-                )
+                blackholes_binary.spin_angle_1, blackholes_binary.spin_angle_2 = \
+                        evolve.change_bin_spin_angles(
+                            blackholes_binary.spin_angle_1,
+                            blackholes_binary.spin_angle_2,
+                            blackholes_binary.flag_merging,
+                            opts.disk_bh_eddington_ratio,
+                            opts.disk_bh_torque_condition,
+                            disk_bh_spin_resolution_min,
+                            opts.timestep_duration_yr,
+                        )
 
                 if (opts.flag_dynamic_enc > 0):
                     # Spheroid encounters
                     # FIX THIS: Replace nsc_imf_bh below with nsc_imf_stars_ since pulling from stellar MF
-                    blackholes_binary.bin_sep, blackholes_binary.bin_ecc, blackholes_binary.bin_orb_ecc, blackholes_binary.bin_orb_inc = dynamics.bin_spheroid_encounter(
-                        opts.smbh_mass,
-                        opts.timestep_duration_yr,
-                        blackholes_binary.mass_1,
-                        blackholes_binary.mass_2,
-                        blackholes_binary.bin_orb_a,
-                        blackholes_binary.bin_sep,
-                        blackholes_binary.bin_ecc,
-                        blackholes_binary.bin_orb_ecc,
-                        blackholes_binary.bin_orb_inc,
-                        time_passed,
-                        opts.nsc_imf_bh_powerlaw_index,
-                        opts.delta_energy_strong,
-                        opts.nsc_spheroid_normalization,
-                        opts.mean_harden_energy_delta,
-                        opts.var_harden_energy_delta
-                    )
+                    blackholes_binary.bin_sep, blackholes_binary.bin_ecc, \
+                            blackholes_binary.bin_orb_ecc, blackholes_binary.bin_orb_inc = \
+                            dynamics.bin_spheroid_encounter(
+                                opts.smbh_mass,
+                                opts.timestep_duration_yr,
+                                blackholes_binary.mass_1,
+                                blackholes_binary.mass_2,
+                                blackholes_binary.bin_orb_a,
+                                blackholes_binary.bin_sep,
+                                blackholes_binary.bin_ecc,
+                                blackholes_binary.bin_orb_ecc,
+                                blackholes_binary.bin_orb_inc,
+                                time_passed,
+                                opts.nsc_imf_bh_powerlaw_index,
+                                opts.delta_energy_strong,
+                                opts.nsc_spheroid_normalization,
+                                opts.mean_harden_energy_delta,
+                                opts.var_harden_energy_delta
+                            )
                     # Update filing cabinet with new bin_sep
                     filing_cabinet.update(id_num=blackholes_binary.id_num,
                                           attr="size",
@@ -2104,7 +2107,7 @@ def main():
                     stars_pro.remove_id_num(starstar_id_nums.flatten())
 
             # After this time period, was there a disk capture via orbital grind-down?
-            # To do: What eccentricity do we want the captured BH to have? Right now ecc=0.0? Should it be ecc<h at a?             
+            # To do: What eccentricity do we want the captured BH to have? Right now ecc=0.0? Should it be ecc<h at a?
             # Assume 1st gen BH captured and orb ecc =0.0
             # To do: Bias disk capture to more massive BH!
             # Assuming captured objects are not in the inner disk? (KN)
@@ -2198,7 +2201,7 @@ def main():
 
             # Test if any BH or BBH are in the danger-zone (<mininum_safe_distance, default =50r_g) from SMBH.
             # Potential EMRI/BBH EMRIs.
-            # Find prograde BH in inner disk. Define inner disk as <=50r_g. 
+            # Find prograde BH in inner disk. Define inner disk as <=50r_g.
             # Since a 10Msun BH will decay into a 10^8Msun SMBH at 50R_g in ~38Myr and decay time propto a^4.
             # e.g at 25R_g, decay time is only 2.3Myr.
 
@@ -2598,7 +2601,7 @@ def main():
         blackholes_binary_gw_pop.add_binaries(new_id_num=blackholes_binary_gw.id_num,
                                               new_mass_1=blackholes_binary_gw.mass_1,
                                               new_mass_2=blackholes_binary_gw.mass_2,
-                                              new_orb_a_1=blackholes_binary_gw.orb_a_1, 
+                                              new_orb_a_1=blackholes_binary_gw.orb_a_1,
                                               new_orb_a_2=blackholes_binary_gw.orb_a_2,
                                               new_spin_1=blackholes_binary_gw.spin_1,
                                               new_spin_2=blackholes_binary_gw.spin_2,
@@ -2639,7 +2642,7 @@ def main():
                                  new_time_passed=blackholes_emris.time_passed,
                                  new_gw_freq=blackholes_emris.gw_freq,
                                  new_gw_strain=blackholes_emris.gw_strain)
-        
+
         tdes_pop.add_stars(new_id_num=stars_tdes.id_num,
                            new_mass=stars_tdes.mass,
                            new_log_radius=stars_tdes.log_radius,
@@ -2656,7 +2659,7 @@ def main():
                            new_galaxy=stars_tdes.galaxy,
                            new_gen=stars_tdes.gen,
                            new_time_passed=stars_tdes.time_passed)
-        
+
         stars_plunge_pop.add_stars(new_id_num=stars_plunge.id_num,
                                    new_mass=stars_plunge.mass,
                                    new_log_radius=stars_plunge.log_radius,
@@ -2673,7 +2676,7 @@ def main():
                                    new_galaxy=stars_plunge.galaxy,
                                    new_gen=stars_plunge.gen,
                                    new_time_passed=stars_plunge.time_passed)
-        
+
         stars_pop.add_stars(new_id_num=stars_pro.id_num,
                             new_mass=stars_pro.mass,
                             new_log_radius=stars_pro.log_radius,
@@ -2690,7 +2693,7 @@ def main():
                             new_galaxy=stars_pro.galaxy,
                             new_gen=stars_pro.gen,
                             new_time_passed=stars_pro.time_passed)
-        
+
         stars_explode_pop.add_stars(new_id_num_star=stars_explode.id_num_star,
                                     new_id_num_bh=stars_explode.id_num_bh,
                                     new_mass_star=stars_explode.mass_star,
@@ -2743,18 +2746,18 @@ def main():
 
     # Save things
     emris_pop.to_txt(os.path.join(opts.work_directory, emris_save_name),
-                     cols=emri_cols)        
+                     cols=emri_cols)
 
     blackholes_pro.to_txt(os.path.join(opts.work_directory, survivors_save_name),
                           cols=bh_surviving_cols)
-    
+
     blackholes_binary_gw_pop.to_txt(os.path.join(opts.work_directory, gws_save_name),
                                     cols=binary_gw_cols)
 
     # Include initial seed in header
     blackholes_merged_pop.to_txt(os.path.join(opts.work_directory, population_save_name),
                                  cols=population_cols, extra_header=f"Initial seed: {opts.seed}\n")
-    
+
     if opts.flag_add_stars:
         stars_pop.to_txt(os.path.join(opts.work_directory, stars_save_name),
                                     cols=stars_cols, extra_header=f"Initial seed: {opts.seed}\n")

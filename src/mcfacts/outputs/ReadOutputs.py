@@ -26,24 +26,21 @@ Logfile
         The runtime directory used for the run.
 
 """
-
-# Third party
-from astropy import constants as ct
-# Local imports 
+# Local imports
 from mcfacts.inputs.ReadInputs import INPUT_TYPES
 
 # Dictionary of types
 OUTPUT_TYPES = {
-    "bin_num_max"                   : int,
-    "fname_ini"                     : str,
-    "fname_output_mergers"          : str,
-    "fname_output"                  : str,
-    "fname_snapshots_bh"            : str,
-    "verbose"                       : int,
-    "work_directory"                : str,
-    "seed"                          : int,
-    "fname_log"                     : str,
-    "runtime_directory"             : str,
+    "bin_num_max"                : int,
+    "fname_ini"                  : str,
+    "fname_output_mergers"       : str,
+    "fname_output"               : str,
+    "fname_snapshots_bh"         : str,
+    "verbose"                    : int,
+    "work_directory"             : str,
+    "seed"                       : int,
+    "fname_log"                  : str,
+    "runtime_directory"          : str,
 }
 # Ensure none of the data types are bool to avoid issues casting ascii to boolean
 if bool in OUTPUT_TYPES.values():
@@ -53,7 +50,6 @@ if bool in OUTPUT_TYPES.values():
 # Add the INPUT_TYPES to the OUTPUT_TYPES dictionary
 for key, value in INPUT_TYPES.items():
     OUTPUT_TYPES[key] = value
-
 
 
 def ReadLog(fname_log, verbose=0):
@@ -89,7 +85,7 @@ def ReadLog(fname_log, verbose=0):
         if not (key in OUTPUT_TYPES):
             log_values[key] = value
             extra_values[key] = value
-        
+
     # Print the dictionary
     if verbose:
         for key, value in log_values.items():
@@ -97,7 +93,7 @@ def ReadLog(fname_log, verbose=0):
 
     # Warning if extra values are found
     if len(extra_values) > 0:
-        print(f"~~~~~~~~~~~~~~~~~~~~~~\n",
+        print("~~~~~~~~~~~~~~~~~~~~~~\n",
                f"[ReadOutputs.py] Warning!: The log file you're using contains "
                f"{len(extra_values)} additional entries not found in OUTPUT_TYPES. "
                "They have been added to the log dictionary as a STRING type. "
@@ -105,8 +101,6 @@ def ReadLog(fname_log, verbose=0):
                "analysis or add them to the INPUT_TYPES or OUTPUT_TYPES dictionaries.")
         for key, value in extra_values.items():
             print(f"  {key}: {value}")
-        print(f"~~~~~~~~~~~~~~~~~~~~~~")
-        
+        print("~~~~~~~~~~~~~~~~~~~~~~")
 
     return log_values
-    

@@ -41,7 +41,7 @@ def analytical_kick_velocity(
     mask = mass_1 <= mass_2
 
     m_1_new = np.where(mask, mass_1, mass_2) * u.solMass
-    m_2_new = np.where(mask, mass_2, mass_1)* u.solMass
+    m_2_new = np.where(mask, mass_2, mass_1) * u.solMass
     spin_1_new = np.where(mask, spin_1, spin_2)
     spin_2_new = np.where(mask, spin_2, spin_1)
     spin_angle_1_new = np.where(mask, spin_angle_1, spin_angle_2)

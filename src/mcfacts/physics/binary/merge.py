@@ -296,7 +296,7 @@ def merged_orb_ecc(bin_orbs_a, v_kicks, smbh_mass):
 
     v_kep = ((np.sqrt(const.G * smbh_mass_units / orbs_a_units)).to("km/s")).value
 
-    merged_ecc = v_kicks/v_kep
+    merged_ecc = v_kicks / v_kep
 
     return (merged_ecc)
 
